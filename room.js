@@ -1,58 +1,35 @@
 const q = new URLSearchParams(location.search);
-const name = q.get("name") || "Guest";
-const isBot = q.get("bot");
+const name = q.get("name");
+const roomId = q.get("room");
 
-let mode = 1;
-let win = 0, lose = 0;
-let rank = 1000;
+const socket = io();
+socket.emit("login", name);
+socket.emit("join-room", {room: roomId, name});
 
-document.getElementById("roomTitle").innerText =
-  isBot ? "ROOM #BOT" : "ROOM #" + (q.get("room")||"???");
+room.textContent = "ROOM #" + roomId;
 
-function setMode(n){
-  mode = n;
-  win = lose = 0;
-  status("โหมด " + (n===1?"1 เกมจบ":"2 ใน 3"));
+socket.on("players", p=>{
+  players.innerHTML = "👤 " + p.join(" vs ");
+});
+
+function pick(c){
+  socket.emit("choose", c);
 }
 
-function play(me){
-  const bot = ["rock","paper","scissors"][Math.floor(Math.random()*3)];
-  let result = "";
-
-  if(me===bot) result="เสมอ";
-  else if(
-    (me==="rock" && bot==="scissors") ||
-    (me==="paper" && bot==="rock") ||
-    (me==="scissors" && bot==="paper")
-  ){
-    result="ชนะ";
-    win++;
-    rank+=10;
-    document.getElementById("win").play();
-  }else{
-    result="แพ้";
-    lose++;
-    rank-=10;
-    document.getElementById("lose").play();
+socket.on("result", r=>{
+  if(r.result === "draw"){
+    result.textContent = "เสมอ";
+  } else {
+    result.textContent = `ผู้ชนะ: ${r.result}`;
+    document.getElementById(r.result===name?"win":"lose").play();
   }
-
-  document.getElementById("rank").innerText = rank;
-
-  if(mode===1 || win===2 || lose===2){
-    status(`คุณ${result} (${me} vs ${bot})`);
-  }else{
-    status(`รอบต่อไป (${me} vs ${bot})`);
-  }
-}
-
-function status(t){
-  document.getElementById("status").innerText = t;
-}
+});
 
 function send(){
-  const m = document.getElementById("msg");
-  if(!m.value) return;
-  document.getElementById("chat").innerHTML +=
-    `<div><b>${name}:</b> ${m.value}</div>`;
-  m.value="";
+  socket.emit("chat", msg.value);
+  msg.value="";
 }
+
+socket.on("chat", d=>{
+  log.innerHTML += `<div>${d.name}: ${d.msg}</div>`;
+});
