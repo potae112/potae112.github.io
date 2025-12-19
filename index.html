@@ -1,32 +1,40 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <title>RPS Online</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>RPS ONLINE</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body class="bg">
+<body>
 
-  <div class="home-card glow">
-    <h1 class="title">✊✋✌️ RPS ONLINE</h1>
-    <p class="subtitle">Real-time • เล่นกับเพื่อน • บอทโหด</p>
+<div class="card">
+  <h1>✊✋✌ RPS ONLINE</h1>
 
-    <div class="mode-box">
-      <button class="btn primary" onclick="createRoom()">
-        👥 เล่นกับเพื่อน
-      </button>
+  <input id="name" placeholder="ชื่อผู้เล่น">
 
-      <button class="btn danger" onclick="playBot()">
-        🤖 เล่นกับบอทโหด (แพ้ 99%)
-      </button>
-    </div>
+  <button onclick="playFriend()">👥 เล่นกับเพื่อน</button>
+  <button onclick="playBot()">🤖 เล่นกับบอท (โหด)</button>
 
-    <div class="join-box">
-      <input id="roomInput" placeholder="ใส่เลขห้อง">
-      <button class="btn ghost" onclick="joinRoom()">เข้าห้อง</button>
-    </div>
-  </div>
+  <hr>
 
-  <script src="script.js"></script>
+  <input id="room" placeholder="เลขห้อง">
+  <button onclick="joinRoom()">เข้า</button>
+</div>
+
+<script>
+function playFriend(){
+  const name = document.getElementById("name").value;
+  location.href = `room.html?room=${Math.floor(Math.random()*9000)}&name=${name}`;
+}
+function playBot(){
+  alert("กำลังทำ 🤖");
+}
+function joinRoom(){
+  const name = document.getElementById("name").value;
+  const room = document.getElementById("room").value;
+  location.href = `room.html?room=${room}&name=${name}`;
+}
+</script>
+
 </body>
 </html>

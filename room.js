@@ -1,48 +1,42 @@
-const params = new URLSearchParams(window.location.search);
-const mode = params.get("mode");
+const socket = io();
+const params = new URLSearchParams(location.search);
 const room = params.get("room");
+const name = params.get("name");
+const spectator = params.get("spectator") === "1";
 
-const title = document.getElementById("roomTitle");
-const countdownEl = document.getElementById("countdown");
-const resultEl = document.getElementById("result");
+document.getElementById("roomId").innerText = `ROOM #${room}`;
 
-if (room) title.innerText = `ROOM #${room}`;
-else title.innerText = "BOT MODE";
+socket.emit("joinRoom", { room, name, spectator });
 
-let count = 3;
-const timer = setInterval(() => {
-  countdownEl.innerText = count;
-  count--;
-  if (count < 0) {
-    clearInterval(timer);
-    countdownEl.innerText = "GO!";
-  }
-}, 1000);
-
-function copyLink() {
-  navigator.clipboard.writeText(window.location.href);
-  alert("คัดลอกลิงก์แล้ว");
+function play(choice){
+  if (spectator) return;
+  socket.emit("play", choice);
 }
 
-function pick(player) {
-  if (mode === "bot") {
-    botFight(player);
-  } else {
-    resultEl.innerText = "⌛ รอผู้เล่นอีกฝั่ง (demo)";
-  }
+socket.on("result", data => {
+  const audio =
+    data.winner === "draw" ? "draw.mp3" :
+    data.winner === socket.id ? "win.mp3" : "lose.mp3";
+
+  new Audio(`/sounds/${audio}`).play();
+  document.getElementById("status").innerText = "จบตา!";
+});
+
+socket.on("rankUpdate", ranks => {
+  document.getElementById("rank").innerHTML =
+    Object.entries(ranks).map(r =>
+      `<div>${r[0]} : ${r[1]}</div>`
+    ).join("");
+});
+
+function sendChat(){
+  const msg = chatInput.value;
+  socket.emit("chat", msg);
+  chatInput.value="";
 }
 
-function botFight(player) {
-  const lose99 = Math.random() < 0.99;
-
-  let bot;
-  if (lose99) {
-    bot = player === "rock" ? "paper"
-        : player === "paper" ? "scissors"
-        : "rock";
-  } else {
-    bot = ["rock","paper","scissors"][Math.floor(Math.random()*3)];
-  }
-
-  resultEl.innerText = `คุณ: ${player} | บอท: ${bot} → ❌ คุณแพ้`;
-}
+socket.on("chat", d => {
+  const div = document.createElement("div");
+  div.innerHTML = `<b>${d.name}</b> (${d.role}): ${d.msg}`;
+  chatBox.appendChild(div);
+});
