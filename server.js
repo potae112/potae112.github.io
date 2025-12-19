@@ -7,97 +7,74 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 app.use(express.static("public"));
-app.use("/sounds", express.static("sounds"));
 
 const rooms = {};
 
 io.on("connection", socket => {
 
-  socket.on("joinRoom", ({ room, name, spectator }) => {
+  socket.on("join", ({ room, name, spectator }) => {
     socket.join(room);
-    socket.room = room;
-    socket.name = name;
-    socket.role = spectator ? "spectator" : "player";
 
     if (!rooms[room]) {
       rooms[room] = {
-        players: [],
-        choices: {},
-        ranks: {}
+        players: {},
+        spectators: [],
+        leaderboard: {}
       };
     }
 
-    if (!spectator && rooms[room].players.length < 2) {
-      rooms[room].players.push(socket.id);
-      rooms[room].ranks[name] ??= 1000;
+    if (spectator) {
+      rooms[room].spectators.push(name);
+    } else {
+      rooms[room].players[socket.id] = { name, choice: null };
+      rooms[room].leaderboard[name] = rooms[room].leaderboard[name] || 1000;
     }
 
-    io.to(room).emit("playersUpdate", {
-      players: rooms[room].players.length
-    });
-
-    io.to(room).emit("rankUpdate", rooms[room].ranks);
+    io.to(room).emit("update", rooms[room]);
   });
 
-  socket.on("play", choice => {
-    const room = socket.room;
-    if (!room) return;
+  socket.on("play", ({ room, choice }) => {
+    if (!rooms[room]) return;
+    rooms[room].players[socket.id].choice = choice;
 
-    rooms[room].choices[socket.id] = choice;
-
-    if (Object.keys(rooms[room].choices).length === 2) {
-      const ids = Object.keys(rooms[room].choices);
-      const c1 = rooms[room].choices[ids[0]];
-      const c2 = rooms[room].choices[ids[1]];
+    const players = Object.values(rooms[room].players);
+    if (players.length === 2 && players.every(p => p.choice)) {
+      const [a, b] = players;
 
       let result = "draw";
       if (
-        (c1 === "rock" && c2 === "scissors") ||
-        (c1 === "paper" && c2 === "rock") ||
-        (c1 === "scissors" && c2 === "paper")
-      ) result = ids[0];
-      else if (c1 !== c2) result = ids[1];
-
-      const resData = {
-        choices: rooms[room].choices,
-        winner: result
-      };
+        (a.choice==="rock"&&b.choice==="scissors")||
+        (a.choice==="paper"&&b.choice==="rock")||
+        (a.choice==="scissors"&&b.choice==="paper")
+      ) result = a.name;
+      else if (a.choice !== b.choice) result = b.name;
 
       if (result !== "draw") {
-        const winSocket = io.sockets.sockets.get(result);
-        if (winSocket) {
-          rooms[room].ranks[winSocket.name] += 10;
-        }
+        rooms[room].leaderboard[result] += 10;
       }
 
-      io.to(room).emit("result", resData);
-      io.to(room).emit("rankUpdate", rooms[room].ranks);
-      rooms[room].choices = {};
+      io.to(room).emit("result", {
+        a, b, result,
+        leaderboard: rooms[room].leaderboard
+      });
+
+      players.forEach(p => p.choice = null);
     }
   });
 
-  socket.on("chat", data => {
-    io.to(socket.room).emit("chat", {
-      name: socket.name,
-      role: socket.role,
-      msg: data,
-      time: new Date().toLocaleTimeString()
-    });
+  socket.on("chat", ({ room, name, msg }) => {
+    io.to(room).emit("chat", { name, msg });
   });
 
   socket.on("disconnect", () => {
-    const room = socket.room;
-    if (!room || !rooms[room]) return;
-
-    rooms[room].players = rooms[room].players.filter(id => id !== socket.id);
-    delete rooms[room].choices[socket.id];
-
-    io.to(room).emit("playersUpdate", {
-      players: rooms[room].players.length
-    });
+    for (const room in rooms) {
+      delete rooms[room].players[socket.id];
+      io.to(room).emit("update", rooms[room]);
+    }
   });
+
 });
 
 server.listen(process.env.PORT || 3000, () =>
-  console.log("Server running")
+  console.log("RPS ONLINE RUNNING")
 );

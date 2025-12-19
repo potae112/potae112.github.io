@@ -1,40 +1,30 @@
 <!DOCTYPE html>
-<html lang="th">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RPS ONLINE</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <title>RPS ONLINE</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body data-theme="dark">
+<body>
 
-<nav class="nav">
-  <div class="logo">✊✋✌ RPS ONLINE</div>
-  <button id="themeToggle">🌗</button>
-</nav>
+<div class="card">
+  <div class="logo">✊ ✋ ✌ <span>RPS ONLINE</span></div>
 
-<main class="hero fade-in">
-  <h1>RPS <span>ONLINE</span></h1>
-  <p>Real-time • เล่นกับเพื่อน • บอทโหด • Rank Sync</p>
+  <input id="name" placeholder="ชื่อผู้เล่น">
 
-  <input id="name" class="input" placeholder="ชื่อผู้เล่น">
-
-  <div class="btn-group">
-    <button class="btn primary glow" onclick="createRoom()">เล่นกับเพื่อน</button>
-    <button class="btn glow" onclick="bot()">เล่นกับบอท</button>
+  <div class="mode">
+    <button class="btn" onclick="createRoom()">เล่นกับเพื่อน</button>
+    <button class="btn" onclick="bot()">เล่นกับบอท</button>
   </div>
 
-  <input id="room" class="input" placeholder="เลขห้อง">
+  <input id="room" placeholder="เลขห้อง">
   <button class="btn" onclick="join()">เข้าห้อง</button>
 
-  <div class="stats">
-    <div class="stat">🏆 Rank Realtime</div>
-    <div class="stat">👀 Spectator</div>
-    <div class="stat">📱 Mobile Ready</div>
+  <div class="info">
+    🏆 Rank realtime • 👀 Spectator • 📱 Mobile Ready
   </div>
-</main>
+</div>
 
 <script src="home.js"></script>
-<script src="theme.js"></script>
 </body>
 </html>

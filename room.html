@@ -1,40 +1,39 @@
 <!DOCTYPE html>
-<html lang="th">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RPS ROOM</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <title>RPS ROOM</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body data-theme="dark">
+<body>
 
-<div class="card fade-in">
-  <h2 id="roomTitle"></h2>
+<div class="card">
+  <div class="logo" id="roomTitle">ROOM</div>
 
-  <div class="mode-select">
-    <button class="btn glow" onclick="setMode(1)">1 เกมจบ</button>
-    <button class="btn glow" onclick="setMode(3)">2 ใน 3</button>
+  <div class="mode">
+    <button class="btn" onclick="setMode(1)">1 เกมจบ</button>
+    <button class="btn" onclick="setMode(3)">2 ใน 3</button>
   </div>
 
-  <h3>เลือก!</h3>
-  <div class="choices">
-    <button onclick="play('rock')">✊</button>
-    <button onclick="play('paper')">✋</button>
-    <button onclick="play('scissors')">✌</button>
+  <div class="hands">
+    <button class="hand" onclick="play('rock')">✊</button>
+    <button class="hand" onclick="play('paper')">✋</button>
+    <button class="hand" onclick="play('scissors')">✌</button>
   </div>
 
-  <p id="result"></p>
+  <div class="info" id="status">เลือกมือ</div>
+  <div class="info">🏆 Rank: <span id="rank">1000</span></div>
 
-  <div class="rank">🏆 Rank: <span id="rank">1000</span></div>
-
-  <div class="chat">
-    <div id="messages"></div>
+  <div class="chat-box" id="chat"></div>
+  <div class="chat-input">
     <input id="msg" placeholder="พิมพ์...">
-    <button onclick="send()">ส่ง</button>
+    <button class="btn" onclick="send()">ส่ง</button>
   </div>
 </div>
 
+<audio id="win" src="sounds/win.mp3"></audio>
+<audio id="lose" src="sounds/lose.mp3"></audio>
+
 <script src="room.js"></script>
-<script src="theme.js"></script>
 </body>
 </html>
