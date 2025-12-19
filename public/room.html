@@ -1,31 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>RPS ROOM</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card">
+  <h2 id="roomId"></h2>
+  <h3 id="status">เลือก!</h3>
+
+  <div class="choices">
+    <button onclick="play('rock')">✊</button>
+    <button onclick="play('paper')">✋</button>
+    <button onclick="play('scissors')">✌</button>
+  </div>
+
+  <h4>🏆 Rank</h4>
+  <div id="rank"></div>
+
+  <h4>💬 Chat</h4>
+  <div id="chatBox"></div>
+  <input id="chatInput" placeholder="พิมพ์...">
+  <button onclick="sendChat()">ส่ง</button>
+</div>
+
 <script src="/socket.io/socket.io.js"></script>
-<script>
-const socket = io();
-const url = new URLSearchParams(location.search);
-const room = url.get("room");
-const name = prompt("ชื่อผู้เล่น");
-
-socket.emit("join", { room, name });
-
-function play(choice){
-  document.getElementById("status").innerText = "⏳ รออีกฝั่ง...";
-  socket.emit("play", choice);
-}
-
-socket.on("result", d => {
-  const me = d.p1.name === name ? d.p1 : d.p2;
-  const enemy = d.p1.name === name ? d.p2 : d.p1;
-
-  let text = `คุณ: ${me.choice}\n`;
-  text += `คู่แข่ง: ${enemy.choice}\n`;
-
-  if (d.result === "draw") text += "เสมอ";
-  else if (
-    (d.result === "p1" && d.p1.name === name) ||
-    (d.result === "p2" && d.p2.name === name)
-  ) text += "🎉 คุณชนะ";
-  else text += "💀 คุณแพ้";
-
-  document.getElementById("status").innerText = text;
-});
-</script>
+<script src="room.js"></script>
+</body>
+</html>
