@@ -1,31 +1,27 @@
 <!DOCTYPE html>
-<html lang="th">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>RPS ROOM</title>
+<title>Room</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="center">
 
-<div class="card wide">
-  <h2 id="roomTitle"></h2>
-  <p id="modeText"></p>
+<div class="card">
+  <h2 id="title"></h2>
 
-  <div class="score">
-    <span id="playerScore">0</span>
-    :
-    <span id="botScore">0</span>
+  <div class="choices">
+    <button onclick="pick('rock')">✊</button>
+    <button onclick="pick('paper')">✋</button>
+    <button onclick="pick('scissors')">✌</button>
   </div>
 
-  <div class="hands">
-    <button onclick="play('rock')">✊</button>
-    <button onclick="play('paper')">✋</button>
-    <button onclick="play('scissors')">✌</button>
-  </div>
+  <button id="copy">📋 Copy ห้อง</button>
 
-  <div id="result"></div>
+  <div id="log"></div>
 </div>
 
+<script src="/socket.io/socket.io.js"></script>
 <script src="room.js"></script>
 </body>
 </html>

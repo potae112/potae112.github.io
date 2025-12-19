@@ -1,49 +1,50 @@
-body{
+body {
   margin:0;
-  height:100vh;
-  background:radial-gradient(circle,#222,#000);
+  background: radial-gradient(circle,#111,#000);
   color:white;
-  font-family:system-ui;
+  font-family: system-ui;
 }
-.center{
+
+.center {
   display:flex;
   justify-content:center;
   align-items:center;
+  height:100vh;
 }
-.card{
-  background:#000;
-  border:1px solid #333;
-  padding:25px;
-  border-radius:16px;
-  box-shadow:0 0 25px rgba(255,255,255,.1);
-  text-align:center;
-}
-.card.wide{width:380px}
 
-button{
+.card {
   background:#000;
-  color:white;
-  border:1px solid #444;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 0 30px #0ff;
+  text-align:center;
+  width:300px;
+}
+
+input,button {
+  width:100%;
+  margin:8px 0;
   padding:10px;
   border-radius:10px;
+  border:1px solid #0ff;
+  background:#000;
+  color:white;
+}
+
+button:hover {
+  background:#0ff;
+  color:black;
   cursor:pointer;
 }
-button:hover{box-shadow:0 0 12px white}
 
-.modes{display:flex;gap:10px}
-.mode.active{border-color:white}
-
-.hands button{
-  font-size:28px;
-  margin:10px;
+.mode.active {
+  background:#0ff;
+  color:black;
 }
 
-.chat{
-  margin-top:10px;
-}
-.chat #log{
-  height:100px;
-  overflow:auto;
-  border:1px solid #333;
-  margin-bottom:5px;
+.room {
+  border:1px solid #0ff;
+  padding:6px;
+  margin:5px;
+  border-radius:10px;
 }

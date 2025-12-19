@@ -2,24 +2,25 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>RPS Login</title>
+<title>RPS LOGIN</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="center">
 
 <div class="card">
-  <h1>✊ ✋ ✌ RPS ONLINE</h1>
+  <h1>✊✋✌ RPS ONLINE</h1>
+
   <input id="name" placeholder="ชื่อผู้เล่น">
-  <button onclick="go()">เข้าสู่ Lobby</button>
+  <button onclick="login()">เข้าสู่ Lobby</button>
 </div>
 
 <script>
-function go(){
-  const n = name.value.trim();
-  if(!n) return alert("ใส่ชื่อก่อน");
-  localStorage.setItem("name",n);
-  location.href="lobby.html";
+function login(){
+  const name = document.getElementById("name").value || "Guest";
+  localStorage.setItem("name", name);
+  location.href = "lobby.html";
 }
 </script>
+
 </body>
 </html>
