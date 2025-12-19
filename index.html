@@ -3,108 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RPS ONLINE</title>
+  <title>RPS CYBER GLOW</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
 
-    <div class="card">
+    <div class="card main-card">
       <div class="brand">
         <div>
-          <h1>✊✋✌️ RPS ONLINE</h1>
-          <small>Real-time • เล่นกับเพื่อน • บอทโหด • Rank sync</small>
+          <h1 class="neon-text">✊✋✌️ RPS ONLINE</h1>
+          <small class="glow-white">MONOCHROME EDITION • PRO EDITION</small>
         </div>
         <div class="badges">
           <div class="badge" id="onlineBadge">🟢 Server: connecting…</div>
-          <div class="badge">📱 Mobile full</div>
         </div>
       </div>
 
       <div class="grid">
         <div class="panel-title">👤 ชื่อผู้เล่น</div>
         <div class="row">
-          <input id="name" placeholder="ใส่ชื่อ เช่น Nongtae" maxlength="18" />
-          <button class="primary" id="saveNameBtn">บันทึกชื่อ</button>
+          <input id="name" placeholder="ใส่ชื่อนักรบของคุณ..." maxlength="18" />
+          <button class="primary" id="saveNameBtn">บันทึก</button>
         </div>
 
-        <div class="panel-title">🎮 โหมดเล่น</div>
+        <div class="panel-title">🎮 เริ่มสงคราม</div>
         <div class="big-actions">
-          <button class="primary" id="createBtn">👥 สร้างห้องเล่นกับเพื่อน</button>
-          <button class="danger" id="botBtn">🤖 เล่นกับบอทโหด (แพ้ 99%)</button>
+          <button class="primary glow-btn" onclick="showModeSelection()">👥 สร้างห้องเล่นกับเพื่อน</button>
+          <button class="danger glow-btn-red" id="botBtn">🤖 ท้าดวล BOT ระดับเซียน (Win Rate 20%)</button>
         </div>
 
         <div class="hr"></div>
 
-        <div class="panel-title">🔗 เข้าห้อง</div>
+        <div class="panel-title">🔗 เข้ารหัสลับ (Join Room)</div>
         <div class="row">
-          <input id="room" placeholder="ใส่เลขห้อง เช่น 4538" maxlength="10" />
+          <input id="room" placeholder="เลขห้อง..." maxlength="10" />
           <button class="primary" id="joinBtn">เข้า</button>
-          <button class="ghost" id="spectateBtn">👀 ดูห้อง (Spectator)</button>
+          <button class="ghost" id="spectateBtn">👀 ดู</button>
         </div>
-
-        <div class="hr"></div>
-
-        <div class="panel-title">🏆 โปรไฟล์ / Rank</div>
-        <div class="kpi">
-          <div class="box"><div class="v" id="kExp">0</div><div class="t">EXP</div></div>
-          <div class="box"><div class="v" id="kW">0</div><div class="t">Wins</div></div>
-          <div class="box"><div class="v" id="kL">0</div><div class="t">Losses</div></div>
-        </div>
-
-        <div class="row">
-          <button id="openLeaderboard">🏅 Leaderboard</button>
-          <button id="openHistory">🧾 Match History</button>
-          <button id="openHow">🧠 วิธีเล่น/แชร์ลิงก์</button>
-        </div>
-
-        <div class="list" id="quickTop"></div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="panel-title">📌 ข่าว/สถานะ</div>
-      <div class="list" id="feed">
-        <div class="item">
-          <div>✅ เล่นกับเพื่อน = realtime</div>
-          <div class="muted right">Socket.IO</div>
-        </div>
-        <div class="item">
-          <div>✅ Bot โหด = แพ้ 99%</div>
-          <div class="muted right">EXP sync</div>
-        </div>
-        <div class="item">
-          <div>✅ Spectator ดูสด + Chat</div>
-          <div class="muted right">ในห้อง</div>
-        </div>
+    <div class="card history-info">
+      <div class="panel-title">📜 ตำนานเป่ายิงฉุบ (ROSHAMBO)</div>
+      <div class="history-content muted">
+        <p>• <b>ต้นกำเนิด:</b> ย้อนกลับไปกว่า 2,000 ปี ในสมัยราชวงศ์ฮั่นของจีน เรียกว่า <i>"shoushiling"</i></p>
+        <p>• <b>การกลายพันธุ์:</b> ยุคแรกใช้ <b>กบ (นิ้วก้อย), ตะขาบ (นิ้วชี้), งู (นิ้วโป้ง)</b> ก่อนจะเปลี่ยนเป็น ค้อน กรรไกร กระดาษ ในญี่ปุ่นช่วงศตวรรษที่ 19</p>
+        <p>• <b>ระดับโลก:</b> ปัจจุบันมีการแข่งขัน <i>World RPS Society</i> ที่ใช้จิตวิทยาขั้นสูงในการดักทางคู่ต่อสู้</p>
       </div>
+    </div>
 
-      <div class="panel-title">🧭 ทางลัด</div>
-      <div class="row">
-        <button id="refreshProfile">รีเฟรชโปรไฟล์</button>
-        <button id="refreshBoard">รีเฟรชลีดเดอร์บอร์ด</button>
+    <div class="card stats-card">
+      <div class="panel-title">🏆 อันดับนักรบสูงสุด</div>
+      <div class="kpi">
+        <div class="box"><div class="v" id="kExp">0</div><div class="t">EXP</div></div>
+        <div class="box"><div class="v" id="kW">0</div><div class="t">Wins</div></div>
+        <div class="box"><div class="v" id="kL">0</div><div class="t">Losses</div></div>
       </div>
-
-      <div class="panel-title">🏅 Top 10 (เร็ว)</div>
       <div class="list" id="top10"></div>
+      <div class="row mt-10">
+        <button id="openLeaderboard">🏅 อันดับทั้งหมด</button>
+        <button id="openHistory">🧾 ประวัติการเล่น</button>
+      </div>
     </div>
-
   </div>
 
   <div class="toast" id="toast"></div>
 
-  <!-- Modal -->
   <div class="modal-backdrop" id="modalBack">
     <div class="modal">
       <div class="top">
-        <h3 id="modalTitle">Modal</h3>
+        <h3 id="modalTitle">ตั้งค่าการดวล</h3>
         <button id="closeModal">ปิด</button>
       </div>
-      <div class="content" id="modalContent"></div>
+      <div class="content" id="modalContent">
+        </div>
     </div>
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="home.js"></script>
+
+  <script>
+    // ฟังก์ชันสำหรับหน้า Index โดยเฉพาะ
+    function showModeSelection() {
+      const modal = document.getElementById('modalBack');
+      const content = document.getElementById('modalContent');
+      document.getElementById('modalTitle').innerText = "เลือกกติกาการตัดสิน";
+      
+      content.innerHTML = `
+        <div class="mode-options">
+          <button class="mode-btn" onclick="confirmCreateRoom('1')">
+            <b>⚡ 1 เป้าจบ</b>
+            <span>ตัดสินในครั้งเดียว รวดเร็ว ดุดัน</span>
+          </button>
+          <button class="mode-btn" onclick="confirmCreateRoom('3')">
+            <b>🏆 2 ใน 3 (Best of 3)</b>
+            <span>วัดกันที่ฝีมือและจิตวิทยา ใครถึง 2 ก่อนชนะ</span>
+          </button>
+        </div>
+      `;
+      modal.style.display = 'flex';
+    }
+
+    function confirmCreateRoom(mode) {
+      const name = document.getElementById('name').value.trim();
+      if (!name) {
+        alert("กรุณาใส่ชื่อก่อนเริ่มเกม!");
+        return;
+      }
+      const roomNum = Math.floor(1000 + Math.random() * 9000);
+      // ส่งไปหน้า room.html พร้อมระบุ mode
+      location.href = `room.html?room=${roomNum}&mode=${mode}&name=${encodeURIComponent(name)}`;
+    }
+  </script>
 </body>
 </html>
