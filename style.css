@@ -1,244 +1,171 @@
-.card.big {
-  width: 360px;
+/* =====================
+   GLOBAL RESET
+===================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Prompt', sans-serif;
 }
 
-.score {
-  font-size: 28px;
-  text-align: center;
-  margin: 10px 0;
-  text-shadow: 0 0 10px #0ff;
+body {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #0a1a2f, #05080f 70%);
+  color: #e6e6e6;
 }
 
-.result {
-  text-align: center;
-  margin: 10px 0;
+/* =====================
+   NAVBAR
+===================== */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 64px;
+  background: rgba(5, 8, 15, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 180, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  z-index: 1000;
+}
+
+nav .logo {
   font-size: 20px;
+  font-weight: 600;
+  color: #5fd7ff;
+  text-shadow: 0 0 12px rgba(95, 215, 255, 0.6);
 }
 
-.mode {
+nav ul {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+nav ul li a {
+  color: #cfd8e3;
+  text-decoration: none;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+nav ul li a:hover {
+  color: #5fd7ff;
+  text-shadow: 0 0 8px rgba(95, 215, 255, 0.6);
+}
+
+/* =====================
+   HERO SECTION
+===================== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  opacity: 0.8;
-  margin-bottom: 10px;
+  padding-top: 64px;
 }
 
-.chat {
-  background:#000;
-  height:100px;
-  overflow:auto;
-  border:1px solid #333;
-  padding:5px;
-}
-/* ===== RPS ONLINE : Black & White Neon ===== */
-:root{
-  --bg0:#050608;
-  --bg1:#0a0c10;
-  --card:#0b0d12cc;
-  --line:#1a1d26;
-  --text:#f2f4f8;
-  --muted:#a8b0bf;
-  --glass: blur(18px);
-
-  --glowW: 0 0 18px rgba(255,255,255,.22);
-  --glowStrong: 0 0 28px rgba(255,255,255,.35);
-  --shadow: 0 18px 60px rgba(0,0,0,.65);
+.hero h1 {
+  font-size: 56px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  line-height: 1.2;
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family: system-ui, "Prompt", sans-serif;
-  color:var(--text);
-  background:
-    radial-gradient(1200px 700px at 50% 20%, rgba(255,255,255,.09), transparent 60%),
-    radial-gradient(900px 500px at 30% 80%, rgba(255,255,255,.05), transparent 55%),
-    linear-gradient(180deg, var(--bg0), var(--bg1));
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
+.hero h1 span {
+  color: #5fd7ff;
+  text-shadow: 0 0 20px rgba(95, 215, 255, 0.9);
 }
 
-/* subtle animated noise */
-body::before{
-  content:"";
-  position:fixed; inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.14'/%3E%3C/svg%3E");
-  mix-blend-mode:overlay;
-  opacity:.18;
-  pointer-events:none;
+.hero p {
+  max-width: 620px;
+  margin: 24px auto 36px;
+  font-size: 16px;
+  color: #a9b6c9;
+  line-height: 1.7;
 }
 
-/* container/card */
-.card{
-  width:min(420px, 92vw);
-  border-radius:22px;
-  padding:22px 18px;
-  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-  border:1px solid rgba(255,255,255,.10);
-  box-shadow: var(--shadow);
-  backdrop-filter: var(--glass);
-  position:relative;
-}
-.card.big{ width:min(520px, 92vw); padding:26px 20px; }
-
-.card::after{
-  content:"";
-  position:absolute; inset:-1px;
-  border-radius:22px;
-  pointer-events:none;
-  box-shadow: var(--glowW);
-  opacity:.9;
+/* =====================
+   BUTTONS
+===================== */
+.btn {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 50px;
+  border: 1px solid rgba(95, 215, 255, 0.4);
+  background: transparent;
+  color: #5fd7ff;
+  font-size: 14px;
+  text-decoration: none;
+  margin: 0 8px;
+  transition: 0.3s;
 }
 
-/* headings */
-h1,h2,h3{margin:0; text-align:center; letter-spacing:.6px}
-h1{font-size:28px}
-h2{font-size:22px}
-h3{font-size:14px; color:var(--muted); font-weight:600; margin-top:14px}
-
-/* small text */
-.mode, .sub, .hint{
-  text-align:center;
-  color:var(--muted);
-  margin-top:8px;
-  font-size:13px;
+.btn:hover {
+  background: rgba(95, 215, 255, 0.1);
+  box-shadow: 0 0 18px rgba(95, 215, 255, 0.6);
 }
 
-/* inputs */
-input{
-  width:100%;
-  padding:12px 12px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.45);
-  color:var(--text);
-  outline:none;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
-}
-input::placeholder{color:rgba(242,244,248,.45)}
-input:focus{
-  border-color: rgba(255,255,255,.35);
-  box-shadow: 0 0 0 3px rgba(255,255,255,.08), var(--glowW);
+.btn.primary {
+  background: linear-gradient(135deg, #3ecbff, #008cff);
+  color: #05080f;
+  border: none;
+  box-shadow: 0 0 24px rgba(0, 180, 255, 0.7);
 }
 
-/* separators */
-hr{
-  border:none;
-  height:1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
-  margin:16px 0;
+.btn.primary:hover {
+  filter: brightness(1.1);
 }
 
-/* buttons */
-button{
-  width:100%;
-  padding:12px 12px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.14);
-  background: rgba(255,255,255,.06);
-  color:var(--text);
-  cursor:pointer;
-  transition: transform .12s ease, background .12s ease, border-color .12s ease, box-shadow .12s ease;
-}
-button:hover{
-  transform: translateY(-1px);
-  background: rgba(255,255,255,.10);
-  border-color: rgba(255,255,255,.22);
-  box-shadow: var(--glowW);
-}
-button:active{ transform: translateY(0px) scale(.99); }
-
-/* “danger/bot” button still B/W but stronger glow */
-button.bot{
-  background: rgba(255,255,255,.10);
-  border-color: rgba(255,255,255,.22);
-  box-shadow: 0 0 18px rgba(255,255,255,.18);
-}
-button.bot:hover{ box-shadow: var(--glowStrong); }
-
-/* mode buttons grid */
-.mode-box{
-  display:grid;
-  gap:10px;
-  margin-top:12px;
+/* =====================
+   STATS BOX
+===================== */
+.stats {
+  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  flex-wrap: wrap;
 }
 
-/* join row (room + enter) */
-.joinrow{
-  display:grid;
-  grid-template-columns: 1fr auto;
-  gap:10px;
-  align-items:center;
-}
-.joinrow button{
-  width:auto;
-  padding:12px 16px;
+.stat-box {
+  width: 140px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(10, 20, 40, 0.6);
+  border: 1px solid rgba(95, 215, 255, 0.2);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6),
+              0 0 12px rgba(95, 215, 255, 0.15);
 }
 
-/* score + result */
-.score{
-  font-size:32px;
-  text-align:center;
-  margin:12px 0 6px;
-  font-weight:800;
-  text-shadow: 0 0 18px rgba(255,255,255,.22);
-}
-.result{
-  text-align:center;
-  margin:10px 0;
-  font-size:18px;
-  font-weight:700;
-}
-.rank{
-  text-align:center;
-  color:var(--muted);
-  margin:10px 0 0;
+.stat-box h2 {
+  font-size: 22px;
+  color: #5fd7ff;
+  margin-bottom: 6px;
 }
 
-/* choice buttons */
-.choices{
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  margin:14px 0;
-}
-.choices button{
-  width:64px;
-  height:58px;
-  padding:0;
-  font-size:22px;
-  border-radius:16px;
+.stat-box p {
+  font-size: 12px;
+  color: #9fb0c8;
 }
 
-/* chat */
-.chat{
-  background: rgba(0,0,0,.55);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:16px;
-  padding:10px;
-  height:140px;
-  overflow:auto;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
-}
-.chat div{
-  padding:6px 8px;
-  border-radius:12px;
-  margin-bottom:6px;
-  background: rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.06);
-}
-.chat b{ color: var(--text); }
-
-/* mobile full screen feel */
-@media (max-width: 520px){
-  body{align-items:stretch; justify-content:stretch;}
-  .card, .card.big{
-    width:100%;
-    min-height: calc(100vh - 36px);
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
+/* =====================
+   MOBILE
+===================== */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 40px;
   }
-  .chat{ height: 180px; }
+
+  nav {
+    padding: 0 20px;
+  }
+
+  .stats {
+    gap: 16px;
+  }
 }

@@ -1,72 +1,40 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RPS ROOM</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPS ROOM</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <div class="room-wrap">
+<body data-theme="dark">
 
-    <div class="card">
-      <div class="brand">
-        <div>
-          <h1 id="roomTitle">ROOM</h1>
-          <small id="subTitle">กำลังเชื่อมต่อ…</small>
-        </div>
-        <div class="badges">
-          <div class="badge" id="roleBadge">role: -</div>
-          <div class="badge" id="specBadge">👀 0</div>
-        </div>
-      </div>
+<div class="card fade-in">
+  <h2 id="roomTitle"></h2>
 
-      <div class="grid">
-        <div class="row" style="justify-content:space-between; align-items:center">
-          <div>
-            <div class="panel-title" style="margin:0">👤 ผู้เล่น</div>
-            <div class="muted" id="playersLine">-</div>
-          </div>
-          <div class="row">
-            <button id="copyLinkBtn">🔗 คัดลอกลิงก์ห้อง</button>
-            <button onclick="location.href='index.html'">🏠 กลับหน้า Home</button>
-          </div>
-        </div>
-
-        <div class="hr"></div>
-
-        <div class="big-result" id="status">เลือก!</div>
-        <div class="sub" id="pickedState">A: - | B: -</div>
-
-        <div class="choice-btns">
-          <button id="btnRock">✊</button>
-          <button id="btnPaper">✋</button>
-          <button id="btnScissors">✌️</button>
-        </div>
-
-        <div class="big-result" id="result"></div>
-        <div class="sub" id="countdown"></div>
-
-        <div class="hr"></div>
-
-        <div class="panel-title">💬 Chat</div>
-        <div class="chatbox" id="chatBox"></div>
-        <div class="chatrow">
-          <input id="msg" placeholder="พิมพ์แล้วกดส่ง" maxlength="200"/>
-          <button class="primary" id="sendBtn">ส่ง</button>
-        </div>
-
-        <div class="panel-title">👀 Spectators</div>
-        <div class="list" id="spectatorList"></div>
-      </div>
-    </div>
-
+  <div class="mode-select">
+    <button class="btn glow" onclick="setMode(1)">1 เกมจบ</button>
+    <button class="btn glow" onclick="setMode(3)">2 ใน 3</button>
   </div>
 
-  <audio id="win" src="sounds/win.mp3" preload="auto"></audio>
-  <audio id="lose" src="sounds/lose.mp3" preload="auto"></audio>
+  <h3>เลือก!</h3>
+  <div class="choices">
+    <button onclick="play('rock')">✊</button>
+    <button onclick="play('paper')">✋</button>
+    <button onclick="play('scissors')">✌</button>
+  </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="room.js"></script>
+  <p id="result"></p>
+
+  <div class="rank">🏆 Rank: <span id="rank">1000</span></div>
+
+  <div class="chat">
+    <div id="messages"></div>
+    <input id="msg" placeholder="พิมพ์...">
+    <button onclick="send()">ส่ง</button>
+  </div>
+</div>
+
+<script src="room.js"></script>
+<script src="theme.js"></script>
 </body>
 </html>

@@ -1,72 +1,40 @@
-const q = new URLSearchParams(location.search);
-const room = q.get("room") || "BOT";
-const name = q.get("name");
-const mode = Number(q.get("mode") || 1);
-const isBot = q.get("bot");
+const params = new URLSearchParams(location.search);
+const room = params.get("room") || "BOT";
+const name = params.get("name") || "Player";
+let rank = 1000;
+let mode = 1;
 
-let myScore = 0;
-let enemyScore = 0;
-let winNeed = mode === 1 ? 1 : 2;
+document.getElementById("roomTitle").innerText = `ROOM #${room}`;
 
-document.getElementById("roomTitle").innerText = "ROOM #" + room;
-document.getElementById("modeText").innerText =
-  mode === 1 ? "🎯 1 เป้าจบ" : "🥊 2 ใน 3";
-
-const socket = io();
-
-if (!isBot) {
-  socket.emit("joinRoom", { room, name });
+function setMode(m) {
+  mode = m;
+  alert(`โหมด ${m === 1 ? "1 เกมจบ" : "2 ใน 3"}`);
 }
 
-function pick(choice) {
-  if (isBot) return botFight(choice);
-  socket.emit("choice", choice);
-}
+function play(choice) {
+  const bot = ["rock","paper","scissors"][Math.floor(Math.random()*3)];
+  let res = "เสมอ";
 
-socket.on("result", data => {
-  let win =
-    (data.result === "A" && data.a.name === name) ||
-    (data.result === "B" && data.b.name === name);
-
-  if (win) myScore++;
-  else if (data.result !== "draw") enemyScore++;
-
-  updateUI(win);
-  checkEnd();
-});
-
-function botFight(my) {
-  const lose = Math.random() < 0.99;
-  if (!lose) myScore++;
-  else enemyScore++;
-
-  updateUI(!lose);
-  checkEnd();
-}
-
-function updateUI(win) {
-  document.getElementById("me").innerText = myScore;
-  document.getElementById("enemy").innerText = enemyScore;
-  document.getElementById("result").innerText =
-    win ? "🏆 YOU WIN" : "💀 YOU LOSE";
-
-  new Audio(win ? "sounds/win.mp3" : "sounds/lose.mp3").play();
-}
-
-function checkEnd() {
-  if (myScore >= winNeed || enemyScore >= winNeed) {
-    setTimeout(() => {
-      alert(myScore > enemyScore ? "🏆 ชนะเกม!" : "💀 แพ้เกม!");
-      location.href = "/";
-    }, 500);
+  if (
+    (choice==="rock" && bot==="scissors") ||
+    (choice==="paper" && bot==="rock") ||
+    (choice==="scissors" && bot==="paper")
+  ) {
+    res = "ชนะ";
+    rank += 10;
+  } else if (choice !== bot) {
+    res = "แพ้";
+    rank -= 10;
   }
+
+  document.getElementById("rank").innerText = rank;
+  document.getElementById("result").innerText =
+    `คุณ: ${choice} | ฝั่งตรงข้าม: ${bot} → ${res}`;
 }
 
 function send() {
-  socket.emit("chat", msg.value);
+  const msg = document.getElementById("msg");
+  const box = document.getElementById("messages");
+  box.innerHTML += `<div><b>${name}:</b> ${msg.value}</div>`;
   msg.value = "";
 }
-
-socket.on("chat", d => {
-  chatBox.innerHTML += `<div><b>${d.name}:</b> ${d.msg}</div>`;
-});
