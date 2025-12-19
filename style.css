@@ -1,0 +1,80 @@
+*{
+  box-sizing:border-box;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:radial-gradient(circle at top, #2b2f77, #0b0e25);
+  color:#fff;
+}
+
+.game{
+  background:rgba(255,255,255,0.06);
+  border-radius:20px;
+  padding:30px 24px;
+  width:100%;
+  max-width:380px;
+  text-align:center;
+  box-shadow:0 0 40px rgba(120,140,255,.4);
+  backdrop-filter:blur(10px);
+}
+
+h1{
+  margin:0;
+  font-size:32px;
+}
+
+.sub{
+  color:#b9c1ff;
+  margin:8px 0 20px;
+}
+
+.choices{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.choices button{
+  background:#1c2155;
+  border:none;
+  border-radius:16px;
+  color:#fff;
+  padding:14px 0;
+  font-size:26px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.choices button span{
+  display:block;
+  font-size:13px;
+  margin-top:4px;
+  color:#cbd1ff;
+}
+
+.choices button:hover{
+  background:#5a6bff;
+  transform:translateY(-2px);
+}
+
+.result p{
+  margin:6px 0;
+  font-size:16px;
+}
+
+#result{
+  margin-top:10px;
+  font-size:20px;
+}
+
+footer{
+  margin-top:16px;
+  opacity:.7;
+}
