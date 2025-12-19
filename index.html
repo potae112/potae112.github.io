@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>RPS LOGIN</title>
+  <title>RPS ONLINE</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,18 +11,20 @@
   <div class="logo">✊ ✋ ✌ <span>RPS ONLINE</span></div>
 
   <input id="name" placeholder="ชื่อผู้เล่น">
-  <button class="btn" onclick="login()">เข้าสู่ Lobby</button>
 
-  <div class="info">Login เพื่อดูห้องที่กำลังเล่น</div>
+  <div class="mode">
+    <button class="btn" onclick="createRoom()">เล่นกับเพื่อน</button>
+    <button class="btn" onclick="bot()">เล่นกับบอท</button>
+  </div>
+
+  <input id="room" placeholder="เลขห้อง">
+  <button class="btn" onclick="join()">เข้าห้อง</button>
+
+  <div class="info">
+    🏆 Rank realtime • 👀 Spectator • 📱 Mobile Ready
+  </div>
 </div>
 
-<script>
-function login(){
-  const name = document.getElementById("name").value;
-  if(!name) return alert("ใส่ชื่อก่อน");
-  location.href = `lobby.html?name=${name}`;
-}
-</script>
-
+<script src="home.js"></script>
 </body>
 </html>
