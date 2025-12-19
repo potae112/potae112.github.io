@@ -1,89 +1,95 @@
 const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+
 const app = express();
-const http = require("http").createServer(app);
-const io = require("socket.io")(http);
+const server = http.createServer(app);
+const io = new Server(server);
 
 app.use(express.static("public"));
 
-let rooms = {};
-let ranks = {};
+const rooms = {};
+
+function result(a,b){
+  if(a===b) return 0;
+  if(
+    (a==="rock"&&b==="scissors")||
+    (a==="paper"&&b==="rock")||
+    (a==="scissors"&&b==="paper")
+  ) return 1;
+  return -1;
+}
 
 io.on("connection", socket => {
 
-  socket.on("login", name => {
-    socket.name = name;
-    if (!ranks[name]) ranks[name] = 1000;
-    socket.emit("rank", ranks[name]);
-    socket.emit("rooms", Object.values(rooms));
-  });
-
-  socket.on("create-room", mode => {
-    const id = Math.floor(1000 + Math.random() * 9000);
-    rooms[id] = {
-      id,
-      mode,
-      players: [],
-      choices: {}
-    };
-    io.emit("rooms", Object.values(rooms));
-  });
-
-  socket.on("join-room", ({ room, name }) => {
-    socket.room = room;
+  socket.on("join-room", ({room,name,mode})=>{
     socket.join(room);
-    if (!rooms[room].players.includes(name)) {
-      rooms[room].players.push(name);
+    socket.room = room;
+    socket.name = name;
+
+    if(!rooms[room]){
+      rooms[room] = {
+        mode,
+        players:{},
+        choices:{},
+        score:{}
+      };
     }
-    io.to(room).emit("players", rooms[room].players);
-    io.emit("rooms", Object.values(rooms));
+
+    rooms[room].players[socket.id] = name;
+    rooms[room].score[socket.id] ??= 0;
+
+    io.to(room).emit("players", Object.values(rooms[room].players));
   });
 
-  socket.on("choose", choice => {
+  socket.on("play", move=>{
     const room = rooms[socket.room];
-    room.choices[socket.name] = choice;
+    if(!room) return;
 
-    if (Object.keys(room.choices).length === room.players.length) {
-      const [a, b] = room.players;
-      const ca = room.choices[a];
-      const cb = room.choices[b];
+    room.choices[socket.id] = move;
 
-      let result = "draw";
-      if (
-        (ca === "rock" && cb === "scissors") ||
-        (ca === "paper" && cb === "rock") ||
-        (ca === "scissors" && cb === "paper")
-      ) result = a;
-      else if (ca !== cb) result = b;
+    const ids = Object.keys(room.players);
+    if(ids.length < 2) return;
 
-      if (result !== "draw") {
-        ranks[result] += 20;
-        ranks[result === a ? b : a] -= 10;
-      }
+    const [a,b] = ids;
+    if(!room.choices[a] || !room.choices[b]) return;
 
-      io.to(socket.room).emit("result", {
-        a, ca, b, cb, result
-      });
+    const r = result(room.choices[a], room.choices[b]);
+    let winner = "draw";
 
-      room.choices = {};
-    }
+    if(r===1){ room.score[a]++; winner = room.players[a]; }
+    if(r===-1){ room.score[b]++; winner = room.players[b]; }
+
+    io.to(socket.room).emit("round-result",{
+      a:{name:room.players[a],move:room.choices[a],score:room.score[a]},
+      b:{name:room.players[b],move:room.choices[b],score:room.score[b]},
+      winner
+    });
+
+    room.choices = {};
   });
 
-  socket.on("chat", msg => {
-    io.to(socket.room).emit("chat", {
-      name: socket.name,
+  socket.on("chat", msg=>{
+    io.to(socket.room).emit("chat",{
+      name:socket.name,
       msg
     });
   });
 
-  socket.on("disconnect", () => {
-    if (!socket.room) return;
+  socket.on("disconnect",()=>{
     const room = rooms[socket.room];
-    if (!room) return;
-    room.players = room.players.filter(p => p !== socket.name);
-    if (room.players.length === 0) delete rooms[socket.room];
-    io.emit("rooms", Object.values(rooms));
+    if(!room) return;
+
+    delete room.players[socket.id];
+    delete room.score[socket.id];
+
+    if(Object.keys(room.players).length===0){
+      delete rooms[socket.room];
+    }
   });
 
 });
 
-http.listen(process.env.PORT || 3000);
+server.listen(process.env.PORT||3000,()=>{
+  console.log("RPS ONLINE RUNNING");
+});

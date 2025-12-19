@@ -1,30 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>RPS ONLINE</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>RPS Login</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="center">
 
 <div class="card">
-  <div class="logo">✊ ✋ ✌ <span>RPS ONLINE</span></div>
-
+  <h1>✊ ✋ ✌ RPS ONLINE</h1>
   <input id="name" placeholder="ชื่อผู้เล่น">
-
-  <div class="mode">
-    <button class="btn" onclick="createRoom()">เล่นกับเพื่อน</button>
-    <button class="btn" onclick="bot()">เล่นกับบอท</button>
-  </div>
-
-  <input id="room" placeholder="เลขห้อง">
-  <button class="btn" onclick="join()">เข้าห้อง</button>
-
-  <div class="info">
-    🏆 Rank realtime • 👀 Spectator • 📱 Mobile Ready
-  </div>
+  <button onclick="go()">เข้าสู่ Lobby</button>
 </div>
 
-<script src="home.js"></script>
+<script>
+function go(){
+  const n = name.value.trim();
+  if(!n) return alert("ใส่ชื่อก่อน");
+  localStorage.setItem("name",n);
+  location.href="lobby.html";
+}
+</script>
 </body>
 </html>

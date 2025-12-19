@@ -1,35 +1,40 @@
-const q = new URLSearchParams(location.search);
-const name = q.get("name");
-const roomId = q.get("room");
-
 const socket = io();
-socket.emit("login", name);
-socket.emit("join-room", {room: roomId, name});
+const q = new URLSearchParams(location.search);
 
-room.textContent = "ROOM #" + roomId;
+const room = q.get("room");
+const name = q.get("name");
+const mode = q.get("mode");
 
-socket.on("players", p=>{
-  players.innerHTML = "👤 " + p.join(" vs ");
-});
+const winScore = mode==="bo3"?2:1;
 
-function pick(c){
-  socket.emit("choose", c);
+document.getElementById("title").innerText=`ROOM #${room} | ${name}`;
+
+socket.emit("join-room",{room,name,mode});
+
+function play(m){
+  socket.emit("play",m);
 }
 
-socket.on("result", r=>{
-  if(r.result === "draw"){
-    result.textContent = "เสมอ";
-  } else {
-    result.textContent = `ผู้ชนะ: ${r.result}`;
-    document.getElementById(r.result===name?"win":"lose").play();
+socket.on("round-result", r=>{
+  score.innerText = `${r.a.name} ${r.a.score} : ${r.b.score} ${r.b.name}`;
+
+  if(r.winner===name){
+    win.play();
+  }else if(r.winner!=="draw"){
+    lose.play();
   }
+
+  result.innerText =
+    `${r.a.name}:${r.a.move} vs ${r.b.name}:${r.b.move} → ${r.winner}`;
 });
 
 function send(){
-  socket.emit("chat", msg.value);
+  if(!msg.value) return;
+  socket.emit("chat",msg.value);
   msg.value="";
 }
 
-socket.on("chat", d=>{
-  log.innerHTML += `<div>${d.name}: ${d.msg}</div>`;
+socket.on("chat", m=>{
+  log.innerHTML+=`<div><b>${m.name}</b>: ${m.msg}</div>`;
+  log.scrollTop=log.scrollHeight;
 });

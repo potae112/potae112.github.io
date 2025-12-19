@@ -1,38 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-  <meta charset="utf-8">
-  <title>RPS ROOM</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>RPS ROOM</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="center">
 
-<div class="card">
-  <div class="logo" id="roomTitle">ROOM</div>
+<div class="card wide">
+  <h2 id="roomTitle"></h2>
+  <p id="modeText"></p>
 
-  <div class="mode">
-    <button class="btn" onclick="setMode(1)">1 เกมจบ</button>
-    <button class="btn" onclick="setMode(3)">2 ใน 3</button>
+  <div class="score">
+    <span id="playerScore">0</span>
+    :
+    <span id="botScore">0</span>
   </div>
 
   <div class="hands">
-    <button class="hand" onclick="play('rock')">✊</button>
-    <button class="hand" onclick="play('paper')">✋</button>
-    <button class="hand" onclick="play('scissors')">✌</button>
+    <button onclick="play('rock')">✊</button>
+    <button onclick="play('paper')">✋</button>
+    <button onclick="play('scissors')">✌</button>
   </div>
 
-  <div class="info" id="status">เลือกมือ</div>
-  <div class="info">🏆 Rank: <span id="rank">1000</span></div>
-
-  <div class="chat-box" id="chat"></div>
-  <div class="chat-input">
-    <input id="msg" placeholder="พิมพ์...">
-    <button class="btn" onclick="send()">ส่ง</button>
-  </div>
+  <div id="result"></div>
 </div>
-
-<audio id="win" src="sounds/win.mp3"></audio>
-<audio id="lose" src="sounds/lose.mp3"></audio>
 
 <script src="room.js"></script>
 </body>
