@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>RPS ROOM</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Room</title>
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
-
-<div class="card">
-  <h2 id="roomId"></h2>
-  <h3 id="status">เลือก!</h3>
+<body class="center">
+<div class="room-card">
+  <h2 id="roomTitle"></h2>
 
   <div class="choices">
-    <button onclick="play('rock')">✊</button>
-    <button onclick="play('paper')">✋</button>
-    <button onclick="play('scissors')">✌</button>
+    <button onclick="pick('rock')">✊</button>
+    <button onclick="pick('paper')">✋</button>
+    <button onclick="pick('scissors')">✌</button>
   </div>
 
-  <h4>🏆 Rank</h4>
-  <div id="rank"></div>
+  <div id="result"></div>
 
-  <h4>💬 Chat</h4>
+  <h3>👀 Spectator</h3>
+  <ul id="spectators"></ul>
+
+  <h3>📜 History</h3>
+  <ul id="history"></ul>
+
+  <h3>💬 Chat</h3>
   <div id="chatBox"></div>
-  <input id="chatInput" placeholder="พิมพ์...">
-  <button onclick="sendChat()">ส่ง</button>
+  <input id="chatInput">
+  <button onclick="send()">ส่ง</button>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
