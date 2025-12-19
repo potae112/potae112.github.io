@@ -1,32 +1,224 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <title>RPS Online</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<title>RPS ONLINE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:'Prompt',sans-serif;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(circle at top,#1a2cff,#020722 70%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+}
+
+.container{
+  display:grid;
+  grid-template-columns: 1fr 320px;
+  gap:30px;
+  width:90%;
+  max-width:1000px;
+}
+
+.card{
+  background:rgba(10,20,60,.65);
+  border-radius:20px;
+  padding:25px;
+  box-shadow:0 0 40px rgba(0,140,255,.4);
+  backdrop-filter: blur(12px);
+}
+
+.center{
+  text-align:center;
+}
+
+.title{
+  font-size:32px;
+  font-weight:700;
+  margin-bottom:5px;
+}
+
+.sub{
+  opacity:.8;
+  margin-bottom:20px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:hover{ transform:scale(1.04); }
+
+.btn-blue{ background:#0ea5ff; color:#fff; }
+.btn-red{ background:#ff004c; color:#fff; }
+.btn-dark{ background:#111; color:#fff; }
+
+input{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:none;
+  margin:10px 0;
+}
+
+.rank-box{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:rgba(255,255,255,.08);
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:10px;
+}
+
+.progress{
+  height:8px;
+  background:#222;
+  border-radius:8px;
+  overflow:hidden;
+  margin-top:6px;
+}
+
+.progress div{
+  height:100%;
+  background:linear-gradient(90deg,#00f0ff,#00ff88);
+}
+
+.history{
+  max-height:160px;
+  overflow:auto;
+  font-size:14px;
+}
+
+.history div{
+  opacity:.85;
+  margin-bottom:6px;
+}
+
+.spectate{
+  margin-top:15px;
+  font-size:14px;
+  opacity:.8;
+}
+</style>
 </head>
-<body class="bg">
 
-  <div class="home-card glow">
-    <h1 class="title">✊✋✌️ RPS ONLINE</h1>
-    <p class="subtitle">Real-time • เล่นกับเพื่อน • บอทโหด</p>
+<body>
 
-    <div class="mode-box">
-      <button class="btn primary" onclick="createRoom()">
-        👥 เล่นกับเพื่อน
-      </button>
+<div class="container">
 
-      <button class="btn danger" onclick="playBot()">
-        🤖 เล่นกับบอทโหด (แพ้ 99%)
-      </button>
-    </div>
+<!-- MAIN -->
+<div class="card center">
+  <div class="title">✊ ✋ ✌️ RPS ONLINE</div>
+  <div class="sub">Real-time • เล่นกับเพื่อน • บอทโหด</div>
 
-    <div class="join-box">
-      <input id="roomInput" placeholder="ใส่เลขห้อง">
-      <button class="btn ghost" onclick="joinRoom()">เข้าห้อง</button>
-    </div>
+  <button class="btn-blue" onclick="playFriend()">👥 เล่นกับเพื่อน</button>
+  <br><br>
+  <button class="btn-red" onclick="playBot()">🤖 เล่นกับบอทโหด (แพ้ 99%)</button>
+
+  <input id="roomInput" placeholder="ใส่เลขห้อง">
+  <button class="btn-dark" onclick="joinRoom()">➡️ เข้าห้อง</button>
+
+  <div class="spectate">
+    👀 <a href="room.html?mode=spectator" style="color:#7dd3ff">ดูห้องอื่น</a>
+  </div>
+</div>
+
+<!-- SIDE -->
+<div class="card">
+  <h3>🏆 Rank</h3>
+
+  <div class="rank-box">
+    <span id="rankName">Bronze</span>
+    <span id="expText">0 / 100</span>
   </div>
 
-  <script src="script.js"></script>
+  <div class="progress">
+    <div id="expBar" style="width:0%"></div>
+  </div>
+
+  <h3 style="margin-top:20px">📜 Match History</h3>
+  <div class="history" id="history"></div>
+</div>
+
+</div>
+
+<!-- SOUND -->
+<audio id="winSound" src="sounds/win.mp3"></audio>
+<audio id="loseSound" src="sounds/lose.mp3"></audio>
+
+<script>
+/* ===== RANK SYSTEM ===== */
+let exp = Number(localStorage.getItem("exp") || 0);
+let rank = localStorage.getItem("rank") || "Bronze";
+
+const ranks = [
+  {name:"Bronze", need:0},
+  {name:"Silver", need:200},
+  {name:"Gold", need:500},
+  {name:"Diamond", need:1000}
+];
+
+function updateRank(){
+  let current = ranks[0];
+  for(const r of ranks){
+    if(exp >= r.need) current = r;
+  }
+  rank = current.name;
+  localStorage.setItem("rank",rank);
+  localStorage.setItem("exp",exp);
+
+  document.getElementById("rankName").innerText = rank;
+  document.getElementById("expText").innerText = exp+" / "+(current.need+100);
+  document.getElementById("expBar").style.width = (exp%100)+"%";
+}
+
+updateRank();
+
+/* ===== HISTORY ===== */
+function addHistory(text){
+  const h = document.getElementById("history");
+  const div = document.createElement("div");
+  div.innerText = text;
+  h.prepend(div);
+}
+
+/* ===== ACTION ===== */
+function playFriend(){
+  const room = Math.floor(1000+Math.random()*9000);
+  location.href = `room.html?room=${room}&mode=friend&owner=1`;
+}
+
+function playBot(){
+  exp += 10;
+  document.getElementById("loseSound").play();
+  addHistory("❌ แพ้บอทโหด");
+  updateRank();
+}
+
+function joinRoom(){
+  const r = document.getElementById("roomInput").value;
+  if(!r) return alert("ใส่เลขห้องก่อน");
+  location.href = `room.html?room=${r}&mode=friend`;
+}
+</script>
+
 </body>
 </html>

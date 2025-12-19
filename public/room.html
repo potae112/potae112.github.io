@@ -1,186 +1,31 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8" />
-  <title>RPS ROOM</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Socket.IO -->
-  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
-
-    body {
-      margin: 0;
-      height: 100vh;
-      background: radial-gradient(circle at top, #1b2a6b, #050b2c);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-    }
-
-    .card {
-      width: 340px;
-      background: rgba(10, 20, 70, 0.9);
-      border-radius: 20px;
-      padding: 28px;
-      text-align: center;
-      box-shadow: 0 0 30px rgba(0, 120, 255, 0.35);
-      animation: fadeIn 0.6s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 22px;
-      letter-spacing: 1px;
-    }
-
-    .room-id {
-      margin-top: 6px;
-      opacity: 0.8;
-      font-size: 14px;
-    }
-
-    .status {
-      margin: 14px 0;
-      min-height: 42px;
-      font-size: 15px;
-      color: #cfe2ff;
-    }
-
-    .choices {
-      display: flex;
-      justify-content: space-between;
-      margin: 16px 0;
-    }
-
-    .choice-btn {
-      width: 85px;
-      height: 85px;
-      font-size: 34px;
-      border-radius: 14px;
-      border: none;
-      cursor: pointer;
-      background: #0d6efd;
-      color: white;
-      transition: 0.2s;
-    }
-
-    .choice-btn:hover {
-      transform: scale(1.08);
-      background: #0b5ed7;
-    }
-
-    .choice-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .result {
-      margin-top: 12px;
-      font-size: 17px;
-      font-weight: bold;
-    }
-
-    .win { color: #00ff9c; }
-    .lose { color: #ff4d6d; }
-    .draw { color: #ffd166; }
-
-    .footer {
-      margin-top: 16px;
-      font-size: 12px;
-      opacity: 0.7;
-    }
-
-    .copy-btn {
-      margin-top: 10px;
-      background: #222;
-      border: none;
-      color: #fff;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-
-<body>
-
-<div class="card">
-  <h1>✊✋✌️ RPS ROOM</h1>
-  <div class="room-id" id="roomIdText">ROOM</div>
-
-  <div class="status" id="status">
-    เลือกเพื่อเริ่มเกม
-  </div>
-
-  <div class="choices">
-    <button class="choice-btn" onclick="play('rock')">👊</button>
-    <button class="choice-btn" onclick="play('paper')">✋</button>
-    <button class="choice-btn" onclick="play('scissors')">✌️</button>
-  </div>
-
-  <div class="result" id="result"></div>
-
-  <button class="copy-btn" onclick="copyLink()">🔗 คัดลอกลิงก์ห้อง</button>
-
-  <div class="footer">
-    Real-time • Socket.IO
-  </div>
-</div>
-
+<script src="/socket.io/socket.io.js"></script>
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const roomId = params.get("room") || "???";
-  document.getElementById("roomIdText").innerText = "ROOM #" + roomId;
+const socket = io();
+const url = new URLSearchParams(location.search);
+const room = url.get("room");
+const name = prompt("ชื่อผู้เล่น");
 
-  const socket = io("https://nongtaeplayingsup.onrender.com");
+socket.emit("join", { room, name });
 
-  socket.emit("join-room", roomId);
+function play(choice){
+  document.getElementById("status").innerText = "⏳ รออีกฝั่ง...";
+  socket.emit("play", choice);
+}
 
-  const statusEl = document.getElementById("status");
-  const resultEl = document.getElementById("result");
-  const buttons = document.querySelectorAll(".choice-btn");
+socket.on("result", d => {
+  const me = d.p1.name === name ? d.p1 : d.p2;
+  const enemy = d.p1.name === name ? d.p2 : d.p1;
 
-  function disableButtons(state) {
-    buttons.forEach(b => b.disabled = state);
-  }
+  let text = `คุณ: ${me.choice}\n`;
+  text += `คู่แข่ง: ${enemy.choice}\n`;
 
-  function play(choice) {
-    disableButtons(true);
-    resultEl.innerHTML = "";
-    statusEl.innerText = "⏳ รออีกฝ่ายเลือก...";
-    socket.emit("play", { roomId, choice });
-  }
+  if (d.result === "draw") text += "เสมอ";
+  else if (
+    (d.result === "p1" && d.p1.name === name) ||
+    (d.result === "p2" && d.p2.name === name)
+  ) text += "🎉 คุณชนะ";
+  else text += "💀 คุณแพ้";
 
-  socket.on("result", (data) => {
-    let cls = "draw";
-    if (data.result.includes("ชนะ")) cls = "win";
-    if (data.result.includes("แพ้")) cls = "lose";
-
-    resultEl.innerHTML = `
-      👊 ${data.p1} vs ${data.p2}<br>
-      <span class="${cls}">${data.result}</span>
-    `;
-    statusEl.innerText = "🎯 รอบใหม่ได้เลย";
-    disableButtons(false);
-  });
-
-  function copyLink() {
-    navigator.clipboard.writeText(window.location.href);
-    statusEl.innerText = "✅ คัดลอกลิงก์แล้ว";
-  }
+  document.getElementById("status").innerText = text;
+});
 </script>
-
-</body>
-</html>
