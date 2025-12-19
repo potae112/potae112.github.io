@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Room</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div class="card">
+    <h2>ห้อง <span id="roomId"></span></h2>
+    <p id="players">ผู้เล่นในห้อง: 0/2</p>
+    <p id="status">รอเริ่ม</p>
+
+    <button onclick="startGame()">▶ เริ่มเกม</button>
+
+    <div class="choices">
+      <button onclick="play('rock')">✊</button>
+      <button onclick="play('paper')">✋</button>
+      <button onclick="play('scissors')">✌️</button>
+    </div>
+
+    <h3 id="result"></h3>
+  </div>
+
+  <script src="room.js"></script>
+</body>
+</html>

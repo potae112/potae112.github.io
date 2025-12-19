@@ -1,0 +1,19 @@
+<div class="card">
+  <h1>✊✋✌ เป่ายิงฉุบ</h1>
+
+  <button onclick="createRoom()">➕ สร้างห้อง</button>
+
+  <input id="room" placeholder="ใส่เลขห้อง">
+  <button onclick="joinRoom()">เข้าเล่น</button>
+</div>
+
+<script>
+function createRoom(){
+  const id = Math.floor(1000 + Math.random()*9000);
+  location.href = `room.html?room=${id}`;
+}
+function joinRoom(){
+  const id = document.getElementById("room").value;
+  location.href = `room.html?room=${id}`;
+}
+</script>
