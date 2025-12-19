@@ -73,3 +73,36 @@ io.on("connection", socket => {
 server.listen(process.env.PORT || 3000, () =>
   console.log("Server running")
 );
+const rooms = {};
+
+io.on("connection",socket=>{
+
+  socket.on("join-lobby",name=>{
+    socket.emit("room-list",rooms);
+  });
+
+  socket.on("join-room",data=>{
+    socket.room=data.room;
+    socket.name=data.name;
+
+    if(!rooms[data.room]){
+      rooms[data.room]={id:data.room,players:0,status:"รอ"}
+    }
+    rooms[data.room].players++;
+    rooms[data.room].status="กำลังเล่น";
+
+    io.emit("room-list",rooms);
+  });
+
+  socket.on("disconnect",()=>{
+    for(const r in rooms){
+      if(rooms[r].players>0){
+        rooms[r].players--;
+        if(rooms[r].players<=0){
+          delete rooms[r];
+        }
+      }
+    }
+    io.emit("room-list",rooms);
+  });
+});

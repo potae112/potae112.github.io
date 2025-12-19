@@ -1,17 +1,41 @@
-function createRoom(){
-  const name = document.getElementById("name").value || "Guest";
-  const id = Math.floor(1000 + Math.random()*9000);
-  location.href = `room.html?room=${id}&name=${name}`;
+const socket = io();
+
+function enterLobby(){
+  const name = document.getElementById("name").value.trim();
+  if(!name) return alert("ใส่ชื่อก่อน");
+
+  localStorage.setItem("name",name);
+
+  document.querySelector(".login-card").classList.add("hidden");
+  document.getElementById("lobby").classList.remove("hidden");
+  document.getElementById("player-name").textContent = name;
+
+  socket.emit("join-lobby",name);
 }
 
-function join(){
-  const name = document.getElementById("name").value || "Guest";
-  const room = document.getElementById("room").value;
-  if(!room) return alert("ใส่เลขห้อง");
-  location.href = `room.html?room=${room}&name=${name}`;
-}
+socket.on("room-list", rooms=>{
+  const list = document.getElementById("room-list");
+  list.innerHTML = "";
 
-function bot(){
-  const name = document.getElementById("name").value || "You";
-  location.href = `room.html?bot=true&name=${name}`;
+  Object.values(rooms).forEach(r=>{
+    const div = document.createElement("div");
+    div.className="room";
+    div.innerHTML=`
+      <div>
+        <b>ROOM #${r.id}</b>
+        <div class="info">${r.players}/2 • ${r.status}</div>
+      </div>
+      <div>
+        <button onclick="join(${r.id})">เข้า</button>
+        <button class="spec" onclick="spectate(${r.id})">ดู</button>
+      </div>`;
+    list.appendChild(div);
+  });
+});
+
+function join(id){
+  location.href=`room.html?room=${id}&name=${localStorage.getItem("name")}`;
+}
+function spectate(id){
+  location.href=`room.html?room=${id}&name=${localStorage.getItem("name")}&spectator=true`;
 }
