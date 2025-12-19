@@ -1,80 +1,77 @@
-*{
-  box-sizing:border-box;
-  font-family: "Segoe UI", Tahoma, sans-serif;
-}
-
 body{
-  margin:0;
-  min-height:100vh;
+  background:#0e1330;
   display:flex;
   justify-content:center;
   align-items:center;
-  background:radial-gradient(circle at top, #2b2f77, #0b0e25);
-  color:#fff;
+  height:100vh;
+  color:white;
+  font-family:sans-serif;
 }
 
-.game{
-  background:rgba(255,255,255,0.06);
-  border-radius:20px;
-  padding:30px 24px;
-  width:100%;
-  max-width:380px;
+.card{
+  background:#1c2255;
+  padding:30px;
+  border-radius:16px;
   text-align:center;
-  box-shadow:0 0 40px rgba(120,140,255,.4);
-  backdrop-filter:blur(10px);
 }
 
-h1{
-  margin:0;
-  font-size:32px;
+button,input{
+  margin:6px;
+  padding:10px 14px;
+  border-radius:10px;
+  border:none;
 }
-
-.sub{
-  color:#b9c1ff;
-  margin:8px 0 20px;
-}
-
-.choices{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  margin-bottom:20px;
-}
+/* ===== Game UI Enhancements ===== */
 
 .choices button{
-  background:#1c2155;
-  border:none;
-  border-radius:16px;
-  color:#fff;
-  padding:14px 0;
   font-size:26px;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.choices button span{
-  display:block;
-  font-size:13px;
-  margin-top:4px;
-  color:#cbd1ff;
+  padding:14px 18px;
+  border-radius:14px;
+  background:#2a2f6f;
+  color:#fff;
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
+  transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
 }
 
 .choices button:hover{
-  background:#5a6bff;
-  transform:translateY(-2px);
+  transform:translateY(-2px) scale(1.03);
+  box-shadow:0 14px 28px rgba(0,0,0,.35);
+  background:#3a40a0;
 }
 
-.result p{
-  margin:6px 0;
-  font-size:16px;
+.choices button:active{
+  transform:scale(.98);
 }
 
-#result{
-  margin-top:10px;
-  font-size:20px;
+/* ปุ่มเล่นใหม่ */
+#restartBtn{
+  margin-top:12px;
+  padding:10px 16px;
+  border-radius:12px;
+  background:#ffcc00;
+  color:#000;
+  font-weight:700;
+  box-shadow:0 8px 18px rgba(255,204,0,.35);
 }
 
-footer{
-  margin-top:16px;
-  opacity:.7;
+#restartBtn:hover{
+  filter:brightness(1.05);
+}
+/* ===== Lose Shake Effect ===== */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.35s;
+}
+
+/* เอฟเฟกต์เรืองแสงตอนชนะ (แถมให้) */
+.win-glow {
+  box-shadow: 0 0 25px rgba(0,255,150,.9);
 }

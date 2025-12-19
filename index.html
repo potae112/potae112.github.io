@@ -1,34 +1,24 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>เป่ายิงฉุบ Online</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>เป่ายิงฉุบ | Home</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="game">
-  <h1>✊ 🖐️ ✌️<br>เป่ายิงฉุบ</h1>
-  <p class="sub">เล่นฟรี บนเว็บ</p>
+<div class="card">
+  <h1>✊🖐️✌️ เป่ายิงฉุบ</h1>
+  <p>สร้างห้อง หรือ เข้าห้อง</p>
 
-  <div class="choices">
-    <button onclick="play('rock')">✊<span>ค้อน</span></button>
-    <button onclick="play('paper')">🖐️<span>กระดาษ</span></button>
-    <button onclick="play('scissors')">✌️<span>กรรไกร</span></button>
-  </div>
+  <button onclick="createRoom()">➕ สร้างห้อง</button>
 
-  <div class="result">
-    <p id="player">คุณ: -</p>
-    <p id="bot">บอท: -</p>
-    <h2 id="result">เลือกเพื่อเริ่มเกม</h2>
-  </div>
+  <hr>
 
-  <footer>
-    <small>Made with HTML • CSS • JavaScript</small>
-  </footer>
+  <input id="roomInput" placeholder="ใส่เลขห้อง">
+  <button onclick="joinRoom()">➡️ เข้าห้อง</button>
 </div>
 
-<script src="script.js"></script>
+<script src="home.js"></script>
 </body>
 </html>
