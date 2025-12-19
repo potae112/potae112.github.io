@@ -1,48 +1,90 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8" />
-  <title>RPS Online</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body class="bg">
-  <div class="home-card" id="card">
-    <h1 class="title">✊✋✌️ RPS ONLINE</h1>
-    <p class="subtitle">Real-time • เล่นกับเพื่อน • บอทโหด</p>
+const socket = io();
 
-    <div class="badge">
-      <span id="rankText">🏆 Rank: -</span>
-      <span>•</span>
-      <span id="pointText">⭐ Points: 0</span>
-    </div>
+/* ===== Params ===== */
+const params = new URLSearchParams(location.search);
+const room = params.get("room") || "BOT";
+const name = params.get("name") || "Guest";
+const spectator = params.get("spectator") === "true";
 
-    <div class="stats">
-      <div class="statBox"><b>ชนะ</b><span id="wins">0</span></div>
-      <div class="statBox"><b>แพ้</b><span id="losses">0</span></div>
-      <div class="statBox"><b>เสมอ</b><span id="draws">0</span></div>
-      <div class="statBox"><b>สตรีคชนะ</b><span id="streak">0</span></div>
-    </div>
+document.getElementById("room-id").textContent = room;
 
-    <hr class="sep"/>
+/* ===== Join ===== */
+socket.emit("join-room", { room, name, spectator });
 
-    <div class="mode-box">
-      <button class="btn primary" onclick="createRoom()">👥 เล่นกับเพื่อน</button>
-      <button class="btn danger" onclick="playBot()">🤖 เล่นกับบอทโหด (แพ้ 99%)</button>
-    </div>
+/* ===== Chat receive ===== */
+socket.on("chat", data => {
+  addMessage(data.name, data.msg, data.role);
+});
 
-    <div class="join-box">
-      <input id="roomInput" placeholder="ใส่เลขห้อง">
-      <button class="btn ghost" onclick="joinRoom()">เข้าห้อง</button>
-    </div>
+/* ===== System ===== */
+socket.on("system-message", data => {
+  addSystem(data.text);
+});
 
-    <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;">
-      <button class="btn ghost" onclick="resetStats()">🧹 ล้างสถิติ</button>
-      <button class="btn ghost" onclick="testClickSound()">🔊 เทสเสียง</button>
-    </div>
+/* ===== Send ===== */
+function send(){
+  const input = document.getElementById("msg");
+  if(!input.value.trim()) return;
 
-    <p class="small">*เสียงจะดังเมื่อมีการคลิกก่อน (กัน autoplay)</p>
-  </div>
+  socket.emit("chat", input.value);
+  handleBot(input.value); // 🧠 bot trigger
+  input.value = "";
+}
 
-  <script src="script.js"></script>
-</body>
-</html>
+/* ===== Bot logic ===== */
+function handleBot(text){
+  const t = text.toLowerCase();
+
+  let reply = null;
+
+  if(t.includes("ช่วย") || t.includes("help")){
+    reply = "พิมพ์: rank / วิธีเล่น / bot / ping";
+  }
+  else if(t.includes("rank")){
+    reply = "Rank ของคุณ = 1000 🏆";
+  }
+  else if(t.includes("วิธีเล่น")){
+    reply = "เลือก ✊ ✋ ✌ ใครชนะได้แต้ม";
+  }
+  else if(t.includes("ping")){
+    reply = "pong 🏓";
+  }
+  else if(t.includes("bot")){
+    reply = "ผมคือบอท RPS 🤖";
+  }
+
+  if(reply){
+    setTimeout(()=>{
+      addMessage("BOT", reply, "bot");
+    },500);
+  }
+}
+
+/* ===== UI helpers ===== */
+function addMessage(user,msg,role){
+  const log = document.getElementById("log");
+  const div = document.createElement("div");
+
+  let cls = "msg ";
+  cls += role || (user==="BOT" ? "bot" : spectator ? "spectator":"player");
+
+  div.className = cls;
+  div.innerHTML = `<b>${user}</b>: ${msg}`;
+
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function addSystem(text){
+  const log = document.getElementById("log");
+  const div = document.createElement("div");
+  div.className = "msg system";
+  div.textContent = text;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+/* ===== Enter ===== */
+document.getElementById("msg").addEventListener("keydown",e=>{
+  if(e.key==="Enter") send();
+});

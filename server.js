@@ -8,73 +8,68 @@ const io = new Server(server);
 
 app.use(express.static("public"));
 
-const rooms = {};
+/* ====== เก็บข้อมูลห้อง ====== */
+const rooms = {}; 
+// rooms[roomId] = { users: Set(), spectators: Set() }
 
 io.on("connection", socket => {
+  console.log("User connected:", socket.id);
 
-  socket.on("join", ({ room, name, spectator }) => {
+  socket.on("join-room", ({ room, name, spectator }) => {
     socket.join(room);
 
     if (!rooms[room]) {
-      rooms[room] = {
-        players: {},
-        spectators: [],
-        leaderboard: {}
-      };
+      rooms[room] = { users: new Set(), spectators: new Set() };
     }
 
     if (spectator) {
-      rooms[room].spectators.push(name);
+      rooms[room].spectators.add(name);
     } else {
-      rooms[room].players[socket.id] = { name, choice: null };
-      rooms[room].leaderboard[name] = rooms[room].leaderboard[name] || 1000;
+      rooms[room].users.add(name);
     }
 
-    io.to(room).emit("update", rooms[room]);
+    socket.room = room;
+    socket.name = name;
+
+    io.to(room).emit("system-message", {
+      text: `${name} เข้าห้อง`,
+    });
+
+    io.to(room).emit("spectator-list", {
+      spectators: [...rooms[room].spectators]
+    });
   });
 
-  socket.on("play", ({ room, choice }) => {
-    if (!rooms[room]) return;
-    rooms[room].players[socket.id].choice = choice;
+  /* ====== CHAT REALTIME ====== */
+  socket.on("chat", msg => {
+    if (!socket.room) return;
 
-    const players = Object.values(rooms[room].players);
-    if (players.length === 2 && players.every(p => p.choice)) {
-      const [a, b] = players;
-
-      let result = "draw";
-      if (
-        (a.choice==="rock"&&b.choice==="scissors")||
-        (a.choice==="paper"&&b.choice==="rock")||
-        (a.choice==="scissors"&&b.choice==="paper")
-      ) result = a.name;
-      else if (a.choice !== b.choice) result = b.name;
-
-      if (result !== "draw") {
-        rooms[room].leaderboard[result] += 10;
-      }
-
-      io.to(room).emit("result", {
-        a, b, result,
-        leaderboard: rooms[room].leaderboard
-      });
-
-      players.forEach(p => p.choice = null);
-    }
-  });
-
-  socket.on("chat", ({ room, name, msg }) => {
-    io.to(room).emit("chat", { name, msg });
+    io.to(socket.room).emit("chat", {
+      name: socket.name,
+      msg,
+      time: new Date().toLocaleTimeString()
+    });
   });
 
   socket.on("disconnect", () => {
-    for (const room in rooms) {
-      delete rooms[room].players[socket.id];
-      io.to(room).emit("update", rooms[room]);
-    }
-  });
+    if (!socket.room) return;
 
+    const room = rooms[socket.room];
+    if (!room) return;
+
+    room.users.delete(socket.name);
+    room.spectators.delete(socket.name);
+
+    io.to(socket.room).emit("system-message", {
+      text: `${socket.name} ออกห้อง`
+    });
+
+    io.to(socket.room).emit("spectator-list", {
+      spectators: [...room.spectators]
+    });
+  });
 });
 
 server.listen(process.env.PORT || 3000, () =>
-  console.log("RPS ONLINE RUNNING")
+  console.log("Server running")
 );

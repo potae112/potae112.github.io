@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>RPS LOBBY</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="card" style="width:420px">
+  <div class="logo">🏠 <span>LOBBY</span></div>
+
+  <button class="btn" onclick="createRoom()">➕ สร้างห้อง</button>
+
+  <div class="info">ห้องที่กำลังเล่น</div>
+
+  <div id="rooms" style="margin-top:10px"></div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="lobby.js"></script>
+</body>
+</html>
